@@ -29,12 +29,12 @@ client.once(Events.ClientReady, c => {
         )
         .toJSON();
 
-    const downloadNew = new SlashCommandBuilder()
+    const waddleNew = new SlashCommandBuilder()
         .setName('waddleupdate')
         .setDescription('Updates followed youtube channels!');
 
-    const downloadVideo = new SlashCommandBuilder()
-        .setName('waddlefetch')
+    const waddleVideo = new SlashCommandBuilder()
+        .setName('waddlevideo')
         .setDescription('Downloads the linked youtube video!')
         .addChannelOption((option) =>
             option.setName('url')
@@ -62,17 +62,19 @@ client.on(Events.InteractionCreate, interaction => {
 
         else if(interaction.commandName === "waddleping"){
             interaction.reply("WaddleB is grabbing new content")
-            const favorites = ['KeltieOConnor', 'theswiftologist', 'forestyforest', 'johnnyharris', 'CurrentlyHannah', 'GameGrumps', 'PhilyBowden', 'rileyrehl', 'ZoeTwoDotss'];
-            const folders = ["Keltie O'Connor", 'Swiftologist', 'Foresty Forest', 'Johnny Harris', 'Currently Hannah', 'GameGrumps', 'Phily Bowden', 'Riley Rehl', 'ZoëTwoDots'];
+            const favorites = ['KeltieOConnor', 'graciekramer14', 'makariespe', /**'thegrumps',**/ 'CurrentlyHannah', /**'GameGrumps',**/ 'PhilyBowden', 'rileyrehl', 'bugfishhhh', 'EthosLab'];
+            const folders = ["Keltie O'Connor", 'Gracie Kramer', 'Makari Espe', /**'The Grumps',**/ 'Currently Hannah', /**'GameGrumps',**/ 'Phily Bowden', 'Riley Rehl', 'bugfishhhh', 'EthosLab'];
             
             for (var i=0; i< favorites.length; i++) {
-                downloadNew(favorites[i], folders[i]);
+                downloadNew("graciekramer14", "Gracie Kramer");
             };
             
         }
 
-        else if(interaction.commandName === "waddlefetch"){
-            interaction.reply("WaddleB is fetching", url)
+        else if(interaction.commandName === "ping"){
+            const url = 'https://www.youtube.com/watch?v=tollGa3S0o8';
+            interaction.reply("WaddleB is fetching", url);
+            downloadVideo(url);
         }
     }
 });
