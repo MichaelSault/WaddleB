@@ -3,14 +3,21 @@ import { joinVoiceChannel, VoiceConnection } from '@discordjs/voice';
 
 import { downloadNew, downloadVideo, generateNFO } from './youtubedl.js';
 import { channels } from './channels.js';
+import { startPlaylistMaintenance } from './playlist-scheduler.js';
 
 import * as dotenv from 'dotenv';
+
 dotenv.config();
 const TOKEN = process.env.DISCORD_TOKEN;
 const YT_DELAY = 90_000; //waits 90 seconds
 const delay = ms => new Promise(resolve => setTimeout(resolve, ms));
 
 const client = new Client({intents: []});
+
+client.once(Events.ClientReady, readyClient => {
+    console.log(`WaddleB is ready as ${readyClient.user.tag}`);
+    startPlaylistMaintenance();
+});
 
 
 client.on(Events.InteractionCreate, async interaction => {

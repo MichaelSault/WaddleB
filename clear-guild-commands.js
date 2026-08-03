@@ -1,4 +1,4 @@
-//removes all test server / guild commands
+//removes all test server (guild) commands
 import 'dotenv/config';
 import { REST, Routes } from 'discord.js';
 
@@ -10,7 +10,7 @@ await rest.put(
         process.env.DISCORD_CLIENT_ID,
         process.env.DISCORD_GUILD_ID
     ),
-    { body: [] }
+    { body: [] } // sends blank list of commands to add
 );
 
 console.log('Removed all guild commands.');

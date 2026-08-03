@@ -5,8 +5,23 @@ import * as fs from 'fs';
 
 const ytdlp = new YtDlp();
 
+// helper function to prevent YouTube shorts videos from being downloaded
+export function isYouTubeShortUrl(url) {
+    try {
+        const parsedUrl = new URL(url);
+        const hostname = parsedUrl.hostname.toLowerCase().replace(/^www\./, "");
+
+        return (hostname === "youtube.com" || hostname === "m.youtube.com")
+            && /^\/shorts(?:\/|$)/i.test(parsedUrl.pathname);
+    } catch {
+        return false;
+    }
+}
+
 export async function downloadNew(channel, folder) {
-    const url = "https://www.youtube.com/@"+ channel;
+    // The channel root includes uploads from the Shorts tab. Restrict discovery
+    // to the Videos tab so only long-form uploads are considered by yt-dlp.
+    const url = "https://www.youtube.com/@" + channel + "/videos";
     const baseDir = "J:/Youtube/" + folder;
 
     //log files before the download
@@ -67,9 +82,9 @@ export async function generateNFO (folder) {
 
     //Find ALL .info.json files in the folder 
     const allFiles = fs.readdirSync(baseDir); 
-    const allJSONs = allFiles.filter(f => f.endsWith(".info.json")); 
-    // Only generate NFOs for videos that don't already have one
+    const allJSONs = allFiles.filter(f => f.endsWith(".info.json"));
 
+    // Only generate NFOs for videos that don't already have one
     const missingNFOs = allJSONs.filter(jsonFile => { 
         const baseName = jsonFile.replace(".info.json", ""); 
         const nfoPath = path.join(baseDir, baseName + ".nfo"); 
@@ -150,6 +165,10 @@ export async function generateNFO (folder) {
 }
 
 export async function downloadVideo(url) {
+    const outputDirectory = isYouTubeShortUrl(url)
+        ? "J:/Downloads/clips/"
+        : "J:/Downloads/";
+
     try {
         const output = await ytdlp.downloadAsync(
         url,
@@ -162,7 +181,7 @@ export async function downloadVideo(url) {
             onProgress: (progress) => {
                 console.log("video progress", progress.percentage);
             },
-            output: "X:/Downloads/" + "%(title)s.%(ext)s",
+            output: outputDirectory + "%(title)s.%(ext)s",
             embedChapters: true,
             embedInfoJson: true,
             embedSubs: true,
@@ -196,7 +215,8 @@ export async function downloadPlaylists(url) {
             onProgress: (progress) => {
                 console.log("video progress", progress.percentage);
             },
-            output: "X:/Youtube/Riley Rehl" + "/%(playlist_title)s/%(playlist_index)s - %(title)s.%(ext)s",
+            //needs to update the output to change based on the name of the playlist
+            output: "J:/Youtube/Riley Rehl" + "/%(playlist_title)s/%(playlist_index)s - %(title)s.%(ext)s",
             embedChapters: true,
             embedInfoJson: true,
             embedSubs: true,

@@ -29,7 +29,7 @@ const waddleUpdate = new SlashCommandBuilder()
             .addChoices(
                 ...channels.map(source => ({
                     name: source.folder,
-                    value: source.option,
+                    value: source.option
                 }))
             )
     );
@@ -50,7 +50,7 @@ const commands = [
     waddleJoin,
     waddlePing,
     waddleUpdate,
-    waddleVideo,
+    waddleVideo
 ].map(command => command.toJSON());
 
 const rest = new REST({ version: '10' }).setToken(process.env.DISCORD_TOKEN);
