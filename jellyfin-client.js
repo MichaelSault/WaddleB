@@ -68,3 +68,27 @@ export async function getWatchedPlaylistItems() {
         }))
         .filter(item => item.youtubeId !== null);
 }
+
+export async function scanJellyfinLibrary() {
+    if (!JELLYFIN_URL || !JELLYFIN_API_KEY) {
+        throw new Error (
+            "Missing JELLYFIN_URL or JELLYFIN_API_KEY"
+        );
+    }
+
+    const scanResponse = await fetch(
+        `${JELLYFIN_URL}/Library/Refresh`,
+        {
+            method: "POST",
+            headers: {
+                "X-Emby-Token": JELLYFIN_API_KEY,
+            },
+        }
+    );
+
+    if (!scanResponse.ok) {
+        throw new Error(
+            `Library scan could not be completed: ${scanResponse.status}`
+        );
+    }
+}
