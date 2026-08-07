@@ -1,8 +1,24 @@
 //run this to register new global commands with Discord's REST API
 import 'dotenv/config';
-import { REST, Routes, SlashCommandBuilder, ChannelType } from 'discord.js';
+import { REST, Routes, SlashCommandBuilder, ChannelType, PermissionFlagsBits } from 'discord.js';
 import { channels } from './channels.js';
 
+
+const waddleHue = new SlashCommandBuilder()
+    .setName('waddlehue')
+    .setDescription('Allows WaddleB to change my lights')
+    .addStringOption(option =>
+        option
+            .setName('hue')
+            .setDescription('changes the colour')
+            .setRequired(false)
+    )
+    .addStringOption(option =>
+        option
+            .setName('brightness')
+            .setDescription('changes the brightness')
+            .setRequired(false)
+    );
 
 const waddleJoin = new SlashCommandBuilder()
     .setName('waddlejoin')
@@ -17,6 +33,17 @@ const waddleJoin = new SlashCommandBuilder()
 const waddlePing = new SlashCommandBuilder()
     .setName('waddleping')
     .setDescription('Returns waddle pong!')
+
+const waddleScan = new SlashCommandBuilder()
+    .setName('waddlescan')
+    .setDescription('Updates the Jellyfin library Data')
+    .setDefaultMemberPermissions(
+        PermissionFlagsBits.Administrator
+    );
+
+const waddleStatus = new SlashCommandBuilder()
+    .setName('waddlestatus')
+    .setDescription('Returns is a video is currently downloading')
 
 const waddleUpdate = new SlashCommandBuilder()
     .setName('waddleupdate')
@@ -47,8 +74,11 @@ const waddleVideo = new SlashCommandBuilder()
 
 
 const commands = [
+    waddleHue,
     waddleJoin,
     waddlePing,
+    waddleScan,
+    waddleStatus,
     waddleUpdate,
     waddleVideo
 ].map(command => command.toJSON());

@@ -5,6 +5,7 @@ import { YtDlp } from "ytdlp-nodejs";
 //imports playlist helper functions
 import { PLAYLIST_ARCHIVE_FILE, PLAYLIST_SEASON_DIRECTORY, PLAYLIST_TEST_MODE, PLAYLIST_URL } from "./playlist-config.js";
 import { generatePlaylistNfoFiles } from "./playlist-nfo.js";
+import { withYouTubeLock } from "./youtube-lock.js";
 
 const ytdlp = new YtDlp();
 
@@ -15,7 +16,7 @@ function isUnavailableVideoError(error) {
 }
 
 // called every 6 hours to look for any new videos
-export async function downloadStaticPlaylist() {
+async function performStaticPlaylistDownload() {
     await fs.mkdir(PLAYLIST_SEASON_DIRECTORY, { recursive: true });
     await fs.mkdir(path.dirname(PLAYLIST_ARCHIVE_FILE), { recursive: true });
 
@@ -77,4 +78,11 @@ export async function downloadStaticPlaylist() {
 
     console.log("Static playlist scan completed.");
     return result;
+}
+
+export function downloadStaticPlaylist() {
+    return withYouTubeLock(
+        "Watch Later playlist update",
+        performStaticPlaylistDownload
+    );
 }
